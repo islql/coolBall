@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        *{padding: 0; margin: 0}
+        body{background: #000; height: 2000px}
+        #canvas{
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+</body>
+</html>
+<script>
+
+
+    let canvas = document.getElementById("canvas"),
+        ctx = canvas.getContext('2d'),
+        winW = document.documentElement.offsetWidth,
+        winH = document.documentElement.clientHeight,
+        arr = [];
+
+    canvas.width = winW;
+    canvas.height = winH;
+
+    function Ball(x, y){
+        this.x = x;
+        this.y = y;
+        this.r = 30;
+        this.ranX = Math.floor(Math.random()*8) - 4;
+        this.ranY = Math.floor(Math.random()*8) - 4;
+        arr.push(this);
+    }
+
+    Ball.prototype.a = function(){
+        this.x += this.ranX;
+        this.y += this.ranY;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
+        ctx.fillStyle = 'rgba(' + Math.floor(Math.random()*256) + ',' + Math.floor(Math.random()*256) + "," + Math.floor(Math.random()*256) + ',' + 0.5 + ')';
+        ctx.fill();//画实心圆
+        ctx.closePath();
+    }
+
+    Ball.prototype.b = function(){
+        this.r --;
+        if(this.r < 0){
+            this.c()
+        }
+    }
+
+    Ball.prototype.c = function(){
+        for(let i = 0; i < arr.length; i ++){
+            if(arr[i] == this){
+                arr.splice(i, 1)
+            }
+        }
+    }
+
+    setInterval(function(){
+        ctx.clearRect(0, 0, winW, winH);
+        for(let i = 0; i < arr.length; i ++){
+            arr[i].a()
+            arr[i].b()
+        }
+    }, 50)
+
+    canvas.onmousemove = function(e) {
+        var e = e || window.event;
+        new Ball(e.clientX, e.clientY);
+    }
+
+
+
+
+
+
+
+
+    /*
+        1000  /  10000      0.1px
+
+        100rem = 10px         100  
+
+
+        width / pageWidth = R(px)
+
+        pX(px) = x(rem)
+
+        pageWidth / pX(px) = width / R(px) * x(rem)    ===      pageWidth / pX(px) = width /  width / pageWidth * x(rem) 
+
+                                                      pageWidth * pageWidth / pX(px) = x(rem) 
+
+        10 / 10 = 1000 / 100 * 10
+
+
+    */
+</script>
